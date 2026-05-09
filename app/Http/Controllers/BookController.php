@@ -90,8 +90,8 @@ class BookController extends Controller
         $book->update($data);
 
         return response()->json([
-            'status' => 'success'
-        ]);
+            'status' => 'success',
+        ], 200);
     }
 
     public function destroy(string $id)
@@ -110,6 +110,6 @@ class BookController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Book deleted successfully'
-        ]);
+        ], 200);
     }
 }
