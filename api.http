@@ -19,25 +19,33 @@ Accept: application/json
   "email":"admin@admin.com",
   "password":"password"
 }
+
+###
+POST http://localhost:8000/api/login HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Accept: application/json
+
+&email=admin@admin.com
+&password=password
 ____________________________________________________________________________________
 
 ###
 GET http://localhost:8000/api/books HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 10|L66YKNTW3oIFWAT8f8MSkJJ4UoxJ3exiO7wGCn7Q3e9c09ae
+Authorization: Bearer 36|iPKTflyhoQ6oRC9q7kdEk6cLrFVoaVU32LgOmjC1c8665679
 
 ###
 GET http://localhost:8000/api/books/1 HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 10|L66YKNTW3oIFWAT8f8MSkJJ4UoxJ3exiO7wGCn7Q3e9c09ae
+Authorization: Bearer 36|iPKTflyhoQ6oRC9q7kdEk6cLrFVoaVU32LgOmjC1c8665679
 
 ###
 POST http://localhost:8000/api/books HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json
-Authorization: Bearer 10|L66YKNTW3oIFWAT8f8MSkJJ4UoxJ3exiO7wGCn7Q3e9c09ae
+Authorization: Bearer 36|iPKTflyhoQ6oRC9q7kdEk6cLrFVoaVU32LgOmjC1c8665679
 
 --boundary123
 Content-Disposition: multipart/form-data; name="book"
@@ -56,7 +64,7 @@ Content-Disposition: multipart/form-data; name="book"
 PUT http://localhost:8000/api/books/4 HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json
-Authorization: Bearer 10|L66YKNTW3oIFWAT8f8MSkJJ4UoxJ3exiO7wGCn7Q3e9c09ae
+Authorization: Bearer 36|iPKTflyhoQ6oRC9q7kdEk6cLrFVoaVU32LgOmjC1c8665679
 
 &book_url=books/THE LIFE OF A STUPID MAN (RYUNOSUKE AKUTAGAWA).pdf
 # &cover_image=public/covers/1768321879897_ikigai.jpg
@@ -72,19 +80,19 @@ ________________________________________________________________________________
 GET http://localhost:8000/api/progress HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 10|L66YKNTW3oIFWAT8f8MSkJJ4UoxJ3exiO7wGCn7Q3e9c09ae
+Authorization: Bearer 36|iPKTflyhoQ6oRC9q7kdEk6cLrFVoaVU32LgOmjC1c8665679
 
 ###
 GET http://localhost:8000/api/progress/1 HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 10|L66YKNTW3oIFWAT8f8MSkJJ4UoxJ3exiO7wGCn7Q3e9c09ae
+Authorization: Bearer 36|iPKTflyhoQ6oRC9q7kdEk6cLrFVoaVU32LgOmjC1c8665679
 
 ###
 POST http://localhost:8000/api/progress HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json
-Authorization: Bearer 10|L66YKNTW3oIFWAT8f8MSkJJ4UoxJ3exiO7wGCn7Q3e9c09ae
+Authorization: Bearer 36|iPKTflyhoQ6oRC9q7kdEk6cLrFVoaVU32LgOmjC1c8665679
 
 &book_id=3
 &current_pages=320
@@ -93,7 +101,7 @@ Authorization: Bearer 10|L66YKNTW3oIFWAT8f8MSkJJ4UoxJ3exiO7wGCn7Q3e9c09ae
 PUT http://localhost:8000/api/progress/1 HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json
-Authorization: Bearer 10|L66YKNTW3oIFWAT8f8MSkJJ4UoxJ3exiO7wGCn7Q3e9c09ae
+Authorization: Bearer 36|iPKTflyhoQ6oRC9q7kdEk6cLrFVoaVU32LgOmjC1c8665679
 
 &current_pages=30
 
