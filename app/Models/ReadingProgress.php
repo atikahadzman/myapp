@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Book;
+use App\Models\User;
 
 class ReadingProgress extends Model
 {
@@ -20,4 +22,14 @@ class ReadingProgress extends Model
         'highlights' => 'array',
         // 'last_read_at' => 'datetime',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class, 'book_id', 'id');
+    }
 }

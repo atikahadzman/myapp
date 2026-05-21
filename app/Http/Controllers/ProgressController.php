@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ReadingProgress;
+use App\Models\Book;
 
 class ProgressController extends Controller
 {
@@ -110,5 +111,21 @@ class ProgressController extends Controller
             'status' => 'success',
             'message' => 'This progress has been deleted.'
         ], 200);
+    }
+
+    public function getByUserId(Request $request)
+    {
+        $progress = ReadingProgress::with('book')
+            ->where('user_id', $request->user_id)
+            ->get();
+
+        if (!$progress) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Not found'
+            ], 404);
+        }
+
+        return response()->json($progress);
     }
 }

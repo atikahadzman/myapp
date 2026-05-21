@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
     Route::apiResource('books', BookController::class);
+    Route::get('/progress/by-user', [ProgressController::class, 'getByUserId']);
     Route::apiResource('progress', ProgressController::class);
 });
 
