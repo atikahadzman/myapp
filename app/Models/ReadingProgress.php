@@ -11,7 +11,7 @@ class ReadingProgress extends Model
     protected $fillable = [
         'user_id',
         'book_id',
-        'current_page',
+        'current_pages',
         'bookmarks',
         'highlights',
         // 'last_read_at',
