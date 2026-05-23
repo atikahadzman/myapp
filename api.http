@@ -33,19 +33,19 @@ ________________________________________________________________________________
 GET http://localhost:8000/api/books HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 85|CUSMFROLTXioo01cX9jmY3Vqa4Rkex8OaV9i9rkF668ee5db
+Authorization: Bearer 1|GvGcdmYYn9JUYMPNeQLlFqmaw9OdtkIlCq18Seqz05196c13
 
 ###
 GET http://localhost:8000/api/books/1 HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 85|CUSMFROLTXioo01cX9jmY3Vqa4Rkex8OaV9i9rkF668ee5db
+Authorization: Bearer 1|GvGcdmYYn9JUYMPNeQLlFqmaw9OdtkIlCq18Seqz05196c13
 
 ###
 POST http://localhost:8000/api/books HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json
-Authorization: Bearer 85|CUSMFROLTXioo01cX9jmY3Vqa4Rkex8OaV9i9rkF668ee5db
+Authorization: Bearer 1|GvGcdmYYn9JUYMPNeQLlFqmaw9OdtkIlCq18Seqz05196c13
 
 --boundary123
 Content-Disposition: multipart/form-data; name="book"
@@ -64,7 +64,7 @@ Content-Disposition: multipart/form-data; name="book"
 PUT http://localhost:8000/api/books/4 HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json
-Authorization: Bearer 85|CUSMFROLTXioo01cX9jmY3Vqa4Rkex8OaV9i9rkF668ee5db
+Authorization: Bearer 1|GvGcdmYYn9JUYMPNeQLlFqmaw9OdtkIlCq18Seqz05196c13
 
 &book_url=books/THE LIFE OF A STUPID MAN (RYUNOSUKE AKUTAGAWA).pdf
 # &cover_image=public/covers/1768321879897_ikigai.jpg
@@ -80,19 +80,19 @@ ________________________________________________________________________________
 GET http://localhost:8000/api/progress HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 85|CUSMFROLTXioo01cX9jmY3Vqa4Rkex8OaV9i9rkF668ee5db
+Authorization: Bearer 1|GvGcdmYYn9JUYMPNeQLlFqmaw9OdtkIlCq18Seqz05196c13
 
 ###
 GET http://localhost:8000/api/progress/12 HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 85|CUSMFROLTXioo01cX9jmY3Vqa4Rkex8OaV9i9rkF668ee5db
+Authorization: Bearer 1|GvGcdmYYn9JUYMPNeQLlFqmaw9OdtkIlCq18Seqz05196c13
 
 ###
 POST http://localhost:8000/api/progress HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json
-Authorization: Bearer 85|CUSMFROLTXioo01cX9jmY3Vqa4Rkex8OaV9i9rkF668ee5db
+Authorization: Bearer 1|GvGcdmYYn9JUYMPNeQLlFqmaw9OdtkIlCq18Seqz05196c13
 
 &book_id=3
 &current_pages=320
@@ -101,7 +101,7 @@ Authorization: Bearer 85|CUSMFROLTXioo01cX9jmY3Vqa4Rkex8OaV9i9rkF668ee5db
 PUT http://localhost:8000/api/progress/12 HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json
-Authorization: Bearer 85|CUSMFROLTXioo01cX9jmY3Vqa4Rkex8OaV9i9rkF668ee5db
+Authorization: Bearer 1|GvGcdmYYn9JUYMPNeQLlFqmaw9OdtkIlCq18Seqz05196c13
 
 &current_pages=34
 
@@ -116,8 +116,43 @@ Authorization: Bearer 5|wNLJceIKqWnyt7QJRQMYDUPifwfX37UkIYHfZIraf438a2c9
 GET http://localhost:8000/api/progress/by-user HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 85|CUSMFROLTXioo01cX9jmY3Vqa4Rkex8OaV9i9rkF668ee5db
+Authorization: Bearer 1|GvGcdmYYn9JUYMPNeQLlFqmaw9OdtkIlCq18Seqz05196c13
 
 {
   "user_id" : 1
 }
+______________________________________________________________________________
+
+###
+GET http://localhost:8000/api/role HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 1|GvGcdmYYn9JUYMPNeQLlFqmaw9OdtkIlCq18Seqz05196c13
+
+###
+GET http://localhost:8000/api/role/1 HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 1|GvGcdmYYn9JUYMPNeQLlFqmaw9OdtkIlCq18Seqz05196c13
+
+###
+POST http://localhost:8000/api/role HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Accept: application/json
+Authorization: Bearer 1|GvGcdmYYn9JUYMPNeQLlFqmaw9OdtkIlCq18Seqz05196c13
+
+&title=Admin
+
+###
+PUT http://localhost:8000/api/role/4 HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Accept: application/json
+Authorization: Bearer 1|GvGcdmYYn9JUYMPNeQLlFqmaw9OdtkIlCq18Seqz05196c13
+
+&title=Admin Test
+
+###
+DELETE http://localhost:8000/api/role/2 HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 5|wNLJceIKqWnyt7QJRQMYDUPifwfX37UkIYHfZIraf438a2c9
