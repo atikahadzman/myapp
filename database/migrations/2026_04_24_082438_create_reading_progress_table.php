@@ -19,9 +19,9 @@ return new class extends Migration
             $table->foreignId('book_id')
                 ->constrained('books')
                 ->onDelete('cascade');
-            $table->integer('current_pages')->nullable();
-            $table->json('bookmarks')->nullable();
+            $table->integer('bookmark')->nullable();
             $table->json('highlights')->nullable();
+            $table->timestamp('last_read_at')->nullable();
             $table->timestamps();
 
             $table->unique(['user_id', 'book_id']);

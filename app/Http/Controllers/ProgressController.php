@@ -25,8 +25,7 @@ class ProgressController extends Controller
     {
         $validated = $request->validate([
             'book_id' => 'required|integer',
-            'current_pages' => 'required|integer',
-            'bookmarks' => 'sometimes|array',
+            'bookmark' => 'required|integer',
             'highlights' => 'sometimes|array'
         ]);
 
@@ -34,10 +33,10 @@ class ProgressController extends Controller
             [
                 'user_id' => $request->user()->id,
                 'book_id' => $validated['book_id'],
-                'current_pages' => $validated['current_pages'],
+                'bookmark' => $validated['bookmark'],
+                'last_read_at' => now(),
             ],
             [
-                'bookmarks' => $validated['bookmarks'] ?? [],
                 'highlights' => $validated['highlights'] ?? [],
             ]
         );
@@ -79,10 +78,10 @@ class ProgressController extends Controller
         }
 
         $data = $request->only([
-            'current_pages',
             'bookmarks',
             'highlights',
         ]);
+        $data['last_read_at'] = now();
 
         if ($progress->update($data)) {
             return response()->json([

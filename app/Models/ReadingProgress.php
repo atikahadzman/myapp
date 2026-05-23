@@ -11,16 +11,14 @@ class ReadingProgress extends Model
     protected $fillable = [
         'user_id',
         'book_id',
-        'current_pages',
-        'bookmarks',
+        'bookmark',
         'highlights',
-        // 'last_read_at',
+        'last_read_at',
     ];
 
     protected $casts = [
-        'bookmarks' => 'array',
         'highlights' => 'array',
-        // 'last_read_at' => 'datetime',
+        'last_read_at' => 'datetime',
     ];
 
     public function user()
