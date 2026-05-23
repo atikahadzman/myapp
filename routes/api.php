@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -21,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/progress/by-user', [ProgressController::class, 'getByUserId']);
     Route::apiResource('progress', ProgressController::class);
     Route::apiResource('role', RoleController::class);
+    Route::apiResource('user', UserController::class);
 });
 
 Route::post('/tokens/create', function (Request $request) {
