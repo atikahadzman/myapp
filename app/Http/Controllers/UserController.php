@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use App\Models\Role;
 use App\Models\User;
@@ -27,10 +29,15 @@ class UserController extends Controller
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|string',
-                'role_id' => 'required|integer',
+                'password' => 'required|min:8',
             ]);
 
-            $user = User::create($validated);
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role_id' => $request->role_id ?? Role::TYPE_READER,
+            ]);
 
             return response()->json([
                 'status' => 'success',
