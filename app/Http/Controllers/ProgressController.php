@@ -77,9 +77,9 @@ class ProgressController extends Controller
             ], 404);
         }
 
-        $data = $request->only([
-            'bookmarks',
-            'highlights',
+        $data = $request->validate([
+            'bookmark' => 'required|integer',
+            'highlights' => 'sometimes|array'
         ]);
         $data['last_read_at'] = now();
 
