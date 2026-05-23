@@ -28,7 +28,7 @@ class BookController extends Controller
                 'total_pages' => 'required|integer',
             ]);
 
-            $validated['user_id'] = $request->user()->id;
+            $validated['added_by'] = $request->user()->id;
 
             $book = Book::create($validated);
 

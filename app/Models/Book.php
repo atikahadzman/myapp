@@ -14,11 +14,11 @@ class Book extends Model
         'cover_image',
         'book_url',
         'total_pages',
-        'user_id',
+        'added_by',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'added_by', 'id');
     }
 }
