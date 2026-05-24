@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('progress', ProgressController::class);
     Route::apiResource('role', RoleController::class);
     Route::apiResource('user', UserController::class);
+    Route::get('/book/show-pdf', [BookController::class, 'showPdf']);
 });
 
 Route::post('/tokens/create', function (Request $request) {
@@ -30,3 +31,19 @@ Route::post('/tokens/create', function (Request $request) {
  
     return ['token' => $token->plainTextToken];
 });
+
+Route::get('/pdf/{mediaId}', function ($mediaId) {
+    $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::findOrFail($mediaId);
+    $path = $media->getPath();
+
+    if (!file_exists($path)) {
+        abort(404, 'File not found');
+    }
+
+    return response()->file($path, [
+        'Content-Type' => 'application/pdf',
+        'Access-Control-Allow-Origin' => 'http://localhost:5173',
+        'Access-Control-Allow-Headers' => 'Authorization, Content-Type',
+    ]);
+})->middleware('auth:sanctum');
+
