@@ -9,9 +9,16 @@ class BookController extends Controller
 {
     public function index()
     {
-        $books = Book::all();
+        $books = Book::with('media')->get();
 
-        return response()->json($books);
+        return response()->json($books->map(function ($book) {
+            $media = $book->getFirstMedia('book_url');
+            return [
+                ...$book->toArray(),
+                'book_url' => $media ? $media->id : null,
+                'cover_image_url' => $book->getFirstMediaUrl('cover_image'),
+            ];
+        }));
     }
 
     public function store(Request $request)
@@ -19,18 +26,20 @@ class BookController extends Controller
         try {
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
-                // 'cover_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
-                'cover_image' => 'required|string',
+                'cover_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
                 'author' => 'required|string|max:255',
                 'description' => 'required',
-                // 'book_url' => 'required|file|mimes:pdf|max:10240',
-                'book_url' => 'required|string',
+                'book_url' => 'required|file|mimes:pdf|max:10240',
                 'total_pages' => 'required|integer',
             ]);
 
-            $validated['added_by'] = $request->user()->id;
-
-            $book = Book::create($validated);
+            $book = Book::create([
+                'title' => $request->title,
+                'author' => $request->author,
+                'description' => $request->description,
+                'total_pages' => $request->total_pages,
+                'added_by' => $request->user()->id,
+            ]);
 
             if ($request->hasFile('cover_image')) {
                 $book->addMediaFromRequest('cover_image')
@@ -111,5 +120,15 @@ class BookController extends Controller
             'status' => 'success',
             'message' => 'Book deleted successfully'
         ], 200);
+    }
+
+    public function showPdf($id)
+    {
+        $file = Storage::path("public/8/file.pdf");
+
+        return response()->file($file, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline'
+        ]);
     }
 }

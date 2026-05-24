@@ -118,16 +118,9 @@ class ProgressController extends Controller
 
     public function getByUserId(Request $request)
     {
-        $progress = ReadingProgress::with('book')
-            ->where('user_id', $request->user_id)
+        $progress = ReadingProgress::with('book.media')
+            ->where('user_id', $request->user()->id)
             ->get();
-
-        if (!$progress) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Not found'
-            ], 404);
-        }
 
         return response()->json($progress);
     }
