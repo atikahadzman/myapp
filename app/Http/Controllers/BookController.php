@@ -132,21 +132,18 @@ class BookController extends Controller
         ]);
     }
 
-    public function getBooksWithProgress(Request $request)
+    public function getBooksWithProgress(string $id)
     {
-        $books = Book::leftJoin(
-            'reading_progress', 
-            'books.id', 
-            '=', 
-            'reading_progress.book_id'
-        )
+        $books = Book::leftJoin('reading_progress', function($join) use ($id) {
+            $join->on('books.id', '=', 'reading_progress.book_id')
+                ->where('reading_progress.user_id', '=', $id);
+        })
         ->select(
-            'books.*', 
-            'reading_progress.bookmark', 
+            'books.*',
             'reading_progress.id as progress_id',
             'reading_progress.bookmark',
             'reading_progress.last_read_at',
-            'books.total_pages', 
+            'reading_progress.user_id',
         )
         ->get();
 
