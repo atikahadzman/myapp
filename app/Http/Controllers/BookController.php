@@ -131,4 +131,25 @@ class BookController extends Controller
             'Content-Disposition' => 'inline'
         ]);
     }
+
+    public function getBooksWithProgress(Request $request)
+    {
+        $books = Book::leftJoin(
+            'reading_progress', 
+            'books.id', 
+            '=', 
+            'reading_progress.book_id'
+        )
+        ->select(
+            'books.*', 
+            'reading_progress.bookmark', 
+            'reading_progress.id as progress_id',
+            'reading_progress.bookmark',
+            'reading_progress.last_read_at',
+            'books.total_pages', 
+        )
+        ->get();
+
+        return $books;
+    }
 }

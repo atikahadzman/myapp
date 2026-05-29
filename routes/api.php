@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('role', RoleController::class);
     Route::apiResource('user', UserController::class);
     Route::get('/book/show-pdf', [BookController::class, 'showPdf']);
+    Route::get('/book/books-progress', [BookController::class, 'getBooksWithProgress']);
 });
 
 Route::post('/tokens/create', function (Request $request) {
