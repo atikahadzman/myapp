@@ -12,10 +12,12 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Role;
 
-#[Fillable(['name', 'email', 'password', 'role_id'])]
+#[Fillable(['name', 'email', 'password', 'role_id', 'status'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
+    CONST STATUS_ACTIVE = 1;
+    CONST STATUS_INACTIVE = 2;
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 

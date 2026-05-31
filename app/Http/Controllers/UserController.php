@@ -37,6 +37,7 @@ class UserController extends Controller
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
                 'role_id' => $request->role_id ?? Role::TYPE_READER,
+                'status' => $request->status ?? User::STATUS_ACTIVE,
             ]);
 
             return response()->json([
@@ -85,13 +86,19 @@ class UserController extends Controller
             'name',
             'email',
             'role_id',
+            'status',
         ]);
 
-        $user->update($data);
+        if ($user->update($data)) {
+            return response()->json([
+                'status' => 'success',
+            ], 200);
+        }
 
-        return response()->json([
-            'status' => 'success',
-        ], 200);
+         return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ], 500);
     }
 
     /**
