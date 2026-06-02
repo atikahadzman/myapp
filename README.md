@@ -4,7 +4,7 @@ This is a system for tracking reading progress. You can upload (in PDF format), 
 </p>
 
 <p>
-This system is for api backend site. Please go to this repository for the frontend side https://github.com/atikahadzman/react-frontend.git
+This system is for api backend side. Please go to this repository for the frontend side https://github.com/atikahadzman/react-frontend.git
 </p>
 
 
