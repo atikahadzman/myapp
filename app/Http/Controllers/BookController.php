@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Book;
+use App\Models\ReadingProgress;
 
 class BookController extends Controller
 {
     public function index()
     {
-        $books = Book::with('media')->get();
+        $books = Book::with('media')->orderBy('created_at', 'desc')->get();
 
         return response()->json($books->map(function ($book) {
             $media = $book->getFirstMedia('book_url');
@@ -30,6 +32,7 @@ class BookController extends Controller
             'description' => 'required',
             'book_url' => 'required|file|mimes:pdf|max:10240',
             'total_pages' => 'required|integer',
+            'status' => 'required|integer',
         ]);
 
         $book = Book::create([
@@ -38,6 +41,7 @@ class BookController extends Controller
             'description' => $request->description,
             'total_pages' => $request->total_pages,
             'added_by' => $request->user()->id,
+            'status' => $request->status ?? Book::STATUS_ENABLE,
         ]);
 
         if ($request->hasFile('cover_image')) {
@@ -65,7 +69,7 @@ class BookController extends Controller
 
     public function show(string $id)
     {
-        $book = Book::find($id);
+        $book = Book::with('user')->findOrFail($id);
 
         if (!$book) {
             return response()->json([
@@ -95,6 +99,7 @@ class BookController extends Controller
             'cover_image',
             'book_url',
             'total_pages',
+            'status',
         ]);
 
         $book->update($data);
@@ -106,7 +111,7 @@ class BookController extends Controller
 
     public function destroy(string $id)
     {
-        $books = Book::find($id);
+        $books = Book::findOrFail($id);
 
         if (!$books) {
             return response()->json([
@@ -115,11 +120,23 @@ class BookController extends Controller
             ], 404);
         }
 
-        $books->delete();
+        $activeReaders = ReadingProgress::where('book_id', $id)
+            ->where('last_read_at', '>=', now()->subMinutes(10))
+            ->where('user_id', '!=', auth()->id())
+            ->count();
+
+        $message = 'Book deleted successfully';
+        if ($activeReaders > 0) {
+            $message = 'Book scheduled for removal. Active readers will be notified.';
+        }
+
+        $books->update([
+            'status' => Book::STATUS_INACTIVE
+        ]);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Book deleted successfully'
+            'message' => $message
         ], 200);
     }
 

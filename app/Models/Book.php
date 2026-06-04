@@ -11,12 +11,16 @@ class Book extends Model implements HasMedia
 {
     use InteractsWithMedia;
 
+    CONST STATUS_ENABLE = 1;
+    CONST STATUS_DISABLE = 2;
+
     protected $fillable = [
         'title',
         'author',
         'description',
         'total_pages',
         'added_by',
+        'status',
     ];
 
     public function getCoverImageUrlAttribute(): ?string

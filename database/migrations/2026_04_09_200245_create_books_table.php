@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('cover_image')->nullable();
             $table->string('book_url')->nullable();
             $table->integer('total_pages')->nullable();
+            $table->integer('status')->nullable();
             $table->timestamps();
         });
     }
