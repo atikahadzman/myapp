@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/progress/by-user', [ProgressController::class, 'getByUserId']);
     Route::apiResource('progress', ProgressController::class);
     Route::apiResource('rate', RatesController::class);
+    Route::get('/rate/by-user/{id}', [RatesController::class, 'getSelfRateByBookId']);
     Route::get('/rate/by-book-id/{id}', [RatesController::class, 'getByBookId']);
     Route::apiResource('role', RoleController::class);
     Route::apiResource('user', UserController::class);

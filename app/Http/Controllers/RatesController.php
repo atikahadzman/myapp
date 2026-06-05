@@ -58,11 +58,25 @@ class RatesController extends Controller
         return response()->json($rate);
     } 
     
-    public function getByBookId(Request $request, string $id)
+    public function getSelfRateByBookId(Request $request, string $id)
     {
         $rate = Rates::where('book_id', $id)
             ->where('added_by', $request->user()->id)
             ->first();
+
+        if (!$rate) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Not found'
+            ], 404);
+        }
+
+        return response()->json($rate);
+    }
+
+     public function getByBookId(string $id)
+    {
+        $rate = Rates::with('user')->where('book_id', $id)->orderBy('created_at', 'desc')->get();
 
         if (!$rate) {
             return response()->json([
