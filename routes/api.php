@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\RatesController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 
@@ -21,6 +22,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('books', BookController::class);
     Route::get('/progress/by-user', [ProgressController::class, 'getByUserId']);
     Route::apiResource('progress', ProgressController::class);
+    Route::apiResource('rate', RatesController::class);
+    Route::get('/rate/by-book-id/{id}', [RatesController::class, 'getByBookId']);
     Route::apiResource('role', RoleController::class);
     Route::apiResource('user', UserController::class);
     Route::get('/book/show-pdf', [BookController::class, 'showPdf']);
