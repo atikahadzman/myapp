@@ -14,9 +14,22 @@ Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
     Route::apiResource('user', UserController::class);
 });
 
+// logging purposes
+Route::middleware('request.logger')->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login',    [AuthController::class, 'login']);
+    Route::apiResource('books', BookController::class);
+    Route::apiResource('progress', ProgressController::class);
+    Route::apiResource('rate', RatesController::class);
+    Route::apiResource('role', RoleController::class);
+    Route::apiResource('user', UserController::class);
+});
+
+// guest can access these
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
 
+// only authenticated user can access these
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     // Route::get('/user', [AuthController::class, 'user']);

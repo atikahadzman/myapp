@@ -17,8 +17,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(prepend: [
             \Illuminate\Http\Middleware\HandleCors::class,
         ]);
+
+        // for authorization purpose
         $middleware->alias([
             'is_admin' => \App\Http\Middleware\IsAdmin::class,
+        ]);
+
+        // for logging purpose
+        $middleware->alias([
+            'request.logger' => \App\Http\Middleware\RequestLogger::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
