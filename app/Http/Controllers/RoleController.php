@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use App\Models\Role;
 
@@ -12,7 +13,9 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $role = Role::all();
+        $role = Cache::remember('role_all', 60, function () {
+            return Role::select('id', 'title', 'created_by')->get()->toArray();
+        });
 
         return response()->json($role);
     }
