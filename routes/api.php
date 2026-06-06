@@ -9,16 +9,17 @@ use App\Http\Controllers\RatesController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// only allow for admin
+Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
+    Route::apiResource('user', UserController::class);
+});
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/user', [AuthController::class, 'user']);
+    // Route::get('/user', [AuthController::class, 'user']);
     Route::apiResource('books', BookController::class);
     Route::get('/progress/by-user', [ProgressController::class, 'getByUserId']);
     Route::apiResource('progress', ProgressController::class);
@@ -26,7 +27,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/rate/by-user/{id}', [RatesController::class, 'getSelfRateByBookId']);
     Route::get('/rate/by-book-id/{id}', [RatesController::class, 'getByBookId']);
     Route::apiResource('role', RoleController::class);
-    Route::apiResource('user', UserController::class);
     Route::get('/book/show-pdf', [BookController::class, 'showPdf']);
     Route::get('/book/books-progress/{id}', [BookController::class, 'getBooksWithProgress']);
 });
