@@ -71,7 +71,7 @@ class UserController extends Controller
             'email' => 'sometimes|email|unique:users,email,' . $id,
             'role_id' => 'sometimes|integer',
             'status' => [
-                'required',
+                'sometimes',
                 'string',
                 Rule::in([
                     User::STATUS_ACTIVE,
