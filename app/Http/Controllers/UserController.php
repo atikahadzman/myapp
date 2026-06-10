@@ -72,7 +72,7 @@ class UserController extends Controller
             'role_id' => 'sometimes|integer',
             'status' => [
                 'sometimes',
-                'string',
+                'integer',
                 Rule::in([
                     User::STATUS_ACTIVE,
                     User::STATUS_INACTIVE,
