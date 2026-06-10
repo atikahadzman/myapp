@@ -26,6 +26,7 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role_id' => Role::TYPE_READER, // set by default
+            'status' => User::STATUS_ACTIVE, // set by default
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
