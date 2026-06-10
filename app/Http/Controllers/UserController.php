@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\Role;
 use App\Models\User;
 
@@ -69,7 +70,14 @@ class UserController extends Controller
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:users,email,' . $id,
             'role_id' => 'sometimes|integer',
-            'status' => 'sometimes|integer',
+            'status' => [
+                'required',
+                'string',
+                Rule::in([
+                    User::STATUS_ACTIVE,
+                    User::STATUS_INACTIVE,
+                ]),
+            ],
         ]);
 
         $user->update($validated);
