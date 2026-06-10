@@ -33,6 +33,7 @@ Run this command to generate the database
 ```bash
 php artisan migrate
 ```
+<img width="1429" height="999" alt="ebook diagram" src="https://github.com/user-attachments/assets/6d8bae69-bc27-41b6-9e7b-f5908545f714" />
 
 
 ## License
