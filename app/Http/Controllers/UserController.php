@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
@@ -16,7 +17,19 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $page = request()->get('page', 1);
+        $perPage = 10;
+
+        $cacheKey = "users_page_{$page}";
+
+        $users = cache()->remember($cacheKey, 60, function () use ($perPage, $page) {
+            return User::select('name', 'email', 'password', 'role_id', 'status')
+                ->orderBy('created_at', 'desc')
+                ->skip(($page - 1) * $perPage)
+                ->take($perPage)
+                ->get()
+                ->toArray();
+        });
 
         return response()->json($users);
     }
@@ -51,7 +64,14 @@ class UserController extends Controller
      */
     public function show(int $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
+        }
 
         return response()->json([
             'status' => 'success',
@@ -64,7 +84,14 @@ class UserController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
+        }
 
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',

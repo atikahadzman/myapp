@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Rates;
 use App\Models\User;
 
@@ -13,9 +14,24 @@ class RatesController extends Controller
      */
     public function index()
     {
-        $rates = Rates::all();
+        $page = request()->get('page', 1);
+        $perPage = 10;
 
-        return response()->json($rates);
+        $cacheKey = "rates_page_{$page}";
+
+        $rates = cache()->remember($cacheKey, 60, function () use ($perPage, $page) {
+            return Rates::select('rating', 'review', 'added_by', 'book_id')
+                ->orderBy('created_at', 'desc')
+                ->skip(($page - 1) * $perPage)
+                ->take($perPage)
+                ->get()
+                ->toArray();
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $rates
+        ], 200);
     }
 
     /**
@@ -25,7 +41,7 @@ class RatesController extends Controller
     {
         $validated = $request->validate([
             'rating' => 'required|integer',
-            'review' => 'required|string',
+            'review' => 'required|string|max:255',
             'book_id' => 'required|integer',
         ]);
 
@@ -37,63 +53,17 @@ class RatesController extends Controller
         ]);
 
         return response()->json([
-            'status' => 'success'
-        ], 200);
+            'status' => 'success',
+            'message' => 'Rating created successfully'
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(int $id)
     {
-        $rate = Rates::findOrFail($id);
-
-        if (!$rate) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Not found'
-            ], 404);
-        }
-
-        return response()->json($rate);
-    } 
-    
-    public function getSelfRateByBookId(Request $request, string $id)
-    {
-        $rate = Rates::where('book_id', $id)
-            ->where('added_by', $request->user()->id)
-            ->first();
-
-        if (!$rate) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Not found'
-            ], 404);
-        }
-
-        return response()->json($rate);
-    }
-
-     public function getByBookId(string $id)
-    {
-        $rate = Rates::with('user')->where('book_id', $id)->orderBy('created_at', 'desc')->get();
-
-        if (!$rate) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Not found'
-            ], 404);
-        }
-
-        return response()->json($rate);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $rate = Rates::findOrFail($id);
+        $rate = Rates::find($id);
 
         if (!$rate) {
             return response()->json([
@@ -102,36 +72,91 @@ class RatesController extends Controller
             ], 404);
         }
 
-        $data = $request->only([
-            'rating',
-            'review',
-            // 'added_by',
-            'book_id',
-        ]);
+        return response()->json([
+            'status' => 'success',
+            'data' => $rate
+        ], 200);
+    } 
+    
+    public function getSelfRateByBookId(Request $request, int $id)
+    {
+        $rate = Rates::where('book_id', $id)
+            ->where('added_by', $request->user()->id)
+            ->first();
 
-        if ($rate->update($data)) {
+        if (!$rate) {
             return response()->json([
-                'status' => 'success',
-            ], 200);
+                'status' => 'error',
+                'message' => 'Rating not found'
+            ], 404);
         }
 
-         return response()->json([
-            'status' => 'error',
-            'message' => $e->getMessage(),
-        ], 500);
+        return response()->json([
+            'status' => 'success',
+            'data' => $rate
+        ], 200);
+    }
+
+     public function getByBookId(int $id)
+    {
+        $rate = Rates::with('user')
+                ->where('book_id', $id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+        if (!$rate) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Rating not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $rate
+        ], 200);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, int $id)
+    {
+        $rate = Rates::find($id);
+
+        if (!$rate) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Rating not found'
+            ], 404);
+        }
+
+        $validated = $request->validate([
+            'rating' => 'sometimes|integer',
+            'review' => 'sometimes|string|max:255',
+            'book_id' => 'sometimes|integer',
+        ]);
+
+        $rate->update($validated);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Rating updated successfully',
+            'data' => $rate
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        $rate = Rates::findOrFail($id);
+        $rate = Rates::find($id);
 
         if (!$rate) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Not found'
+                'message' => 'Rating not found'
             ], 404);
         }
 

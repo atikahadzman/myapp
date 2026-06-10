@@ -34,8 +34,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     // Route::get('/user', [AuthController::class, 'user']);
     Route::apiResource('books', BookController::class);
+    Route::apiResource('progress', ProgressController::class)->whereNumber('progress');
     Route::get('/progress/by-user', [ProgressController::class, 'getByUserId']);
-    Route::apiResource('progress', ProgressController::class);
     Route::apiResource('rate', RatesController::class);
     Route::get('/rate/by-user/{id}', [RatesController::class, 'getSelfRateByBookId']);
     Route::get('/rate/by-book-id/{id}', [RatesController::class, 'getByBookId']);

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
 use App\Models\ReadingProgress;
 
@@ -54,20 +56,13 @@ class BookController extends Controller
                 ->toMediaCollection('book_url');
         }
 
-        if (!$book) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
-
         return response()->json([
             'status' => 'success',
             'data' => $book
         ], 201);
     }
 
-    public function show(string $id)
+    public function show(int $id)
     {
         $book = Book::with('user')->findOrFail($id);
 
@@ -78,10 +73,13 @@ class BookController extends Controller
             ], 404);
         }
 
-        return response()->json($book);
+        return response()->json([
+            'status' => 'success',
+            'data' => $book
+        ], 200);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, int $id)
     {
         $book = Book::find($id);
 
@@ -92,26 +90,39 @@ class BookController extends Controller
             ], 404);
         }
 
-        $data = $request->only([
-            'title',
-            'author',
-            'description',
-            'cover_image',
-            'book_url',
-            'total_pages',
-            'status',
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'cover_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'author' => 'required|string|max:255',
+            'description' => 'required',
+            'book_url' => 'required|file|mimes:pdf|max:10240',
+            'total_pages' => 'required|integer',
+            'status' => 'required|integer',
+            'status' => [
+                'sometimes',
+                'integer',
+                Rule::in([
+                    Book::STATUS_ENABLE,
+                    Book::STATUS_DISABLE,
+                ]),
+            ],
         ]);
 
-        $book->update($data);
+        $book->update($validated);
 
         return response()->json([
             'status' => 'success',
+            'data' => $book
         ], 200);
     }
 
-    public function destroy(string $id)
+    /**
+     * if there's active reader, put notify to current reader
+     * update book status to inactive
+     */
+    public function destroy(int $id)
     {
-        $books = Book::findOrFail($id);
+        $books = Book::find($id);
 
         if (!$books) {
             return response()->json([
@@ -150,7 +161,7 @@ class BookController extends Controller
         ]);
     }
 
-    public function getBooksWithProgress(string $id)
+    public function getBooksWithProgress(int $id)
     {
         $books = Book::leftJoin('reading_progress', function($join) use ($id) {
             $join->on('books.id', '=', 'reading_progress.book_id')
@@ -165,6 +176,11 @@ class BookController extends Controller
         )
         ->get();
 
-        return $books;
+        // return $books;
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $books
+        ], 200);
     }
 }

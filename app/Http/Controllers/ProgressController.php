@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use App\Models\ReadingProgress;
 use App\Models\Book;
 
@@ -13,9 +14,23 @@ class ProgressController extends Controller
      */
     public function index()
     {
-        $progress = ReadingProgress::all();
+        $page = request()->get('page', 1);
+        $perPage = 10;
 
-        return response()->json($progress);
+        $cacheKey = "progress_page_{$page}";
+
+        $progress = cache()->remember($cacheKey, 60, function () use ($perPage, $page) {
+            return ReadingProgress::orderBy('created_at', 'desc')
+                ->skip(($page - 1) * $perPage)
+                ->take($perPage)
+                ->get()
+                ->toArray();
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $progress
+        ], 200);
     }
 
     /**
@@ -42,38 +57,42 @@ class ProgressController extends Controller
         );
 
         return response()->json([
-            'status' => 'success'
+            'status' => 'success',
+            'message' => 'Bookmark created successfully'
         ], 200);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
         $progress = ReadingProgress::find($id);
 
         if (!$progress) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Not found'
+                'message' => 'Bookmark not found'
             ], 404);
         }
 
-        return response()->json($progress);
+        return response()->json([
+            'status' => 'success',
+            'data' => $progress
+        ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, int $id)
     {
         $progress = ReadingProgress::find($id);
 
         if (!$progress) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Not found'
+                'message' => 'Bookmark not found'
             ], 404);
         }
 
@@ -83,28 +102,26 @@ class ProgressController extends Controller
         ]);
         $data['last_read_at'] = now();
 
-        if ($progress->update($data)) {
-            return response()->json([
-                'status' => 'success',
-            ], 200);
-        }
+        $progress->update($data);
 
         return response()->json([
-            'status' => 'error',
-        ], 400);
+            'status' => 'success',
+            'message' => 'Bookmark/Highlight updated successfully',
+            'data' => $progress
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
         $progress = ReadingProgress::find($id);
 
         if (!$progress) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Not found'
+                'message' => 'Bookmark not found'
             ], 404);
         }
 
@@ -122,6 +139,9 @@ class ProgressController extends Controller
             ->where('user_id', $request->user()->id)
             ->get();
 
-        return response()->json($progress);
+        return response()->json([
+            'status' => 'success',
+            'data' => $progress
+        ], 200);
     }
 }
