@@ -14,8 +14,13 @@ Route::get('/books/{filename}', function ($filename) {
         abort(404);
     }
 
+    $allowedOrigins = [
+        'http://localhost:5173',
+        'http://localhost:5174',
+    ];
+
     return Response::file($path, [
-        'Access-Control-Allow-Origin' => 'http://localhost:5173',
+        'Access-Control-Allow-Origin' => $allowedOrigins,
         'Access-Control-Allow-Methods' => 'GET',
         'Access-Control-Allow-Headers' => '*',
     ]);

@@ -58,9 +58,14 @@ Route::get('/pdf/{mediaId}', function ($mediaId) {
         abort(404, 'File not found');
     }
 
+    $allowedOrigins = [
+        'http://localhost:5173',
+        'http://localhost:5174',
+    ];
+
     return response()->file($path, [
         'Content-Type' => 'application/pdf',
-        'Access-Control-Allow-Origin' => 'http://localhost:5173',
+        'Access-Control-Allow-Origin' => $allowedOrigins,
         'Access-Control-Allow-Headers' => 'Authorization, Content-Type',
     ]);
 })->middleware('auth:sanctum');
