@@ -84,13 +84,6 @@ class RatesController extends Controller
             ->where('added_by', $request->user()->id)
             ->first();
 
-        if (!$rate) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Rating not found'
-            ], 404);
-        }
-
         return response()->json([
             'status' => 'success',
             'data' => $rate
