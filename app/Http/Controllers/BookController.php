@@ -35,7 +35,11 @@ class BookController extends Controller
             'book_url' => 'required|file|mimes:pdf|max:10240',
             'total_pages' => 'required|integer',
             'status' => 'required|integer',
-        ]);
+        ],  
+        [
+            'book_url.max' => 'The book size must not exceed 10 MB.',
+        ]
+        );
 
         $book = Book::create([
             'title' => $request->title,
@@ -106,7 +110,11 @@ class BookController extends Controller
                     Book::STATUS_DISABLE,
                 ]),
             ],
-        ]);
+        ], 
+        [
+            'book_url.max' => 'The book size must not exceed 10 MB.',
+        ]
+        );
 
         $book->update($validated);
 
