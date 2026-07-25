@@ -47,7 +47,12 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/tokens/create', function (Request $request) {
     $token = $request->user()->createToken($request->token_name);
  
-    return ['token' => $token->plainTextToken];
+    return [
+        'token' => $token->plainTextToken,
+        'expires_at' => config('sanctum.expiration')
+            ? now()->addMinutes(config('sanctum.expiration'))
+            : null,
+    ];
 });
 
 Route::get('/pdf/{mediaId}', function ($mediaId) {

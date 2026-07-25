@@ -29,11 +29,17 @@ class AuthController extends Controller
             'status' => User::STATUS_ACTIVE, // set by default
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $generate_token = $user->createToken($request->device_name ?? 'api-token');
+        $token = $generate_token->plainTextToken;
+
+        $expires_at = $generate_token->accessToken->created_at
+            ->copy()
+            ->addMinutes(config('sanctum.expiration'));
 
         return response()->json([
             'user'  => $user,
-            'token' => $token
+            'token' => $token,
+            'expires_at' => $expires_at,
         ], 201);
     }
 
@@ -52,11 +58,17 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $token = $user->createToken($request->device_name ?? 'api-token')->plainTextToken;
+        $generate_token = $user->createToken($request->device_name ?? 'api-token');
+        $token = $generate_token->plainTextToken;
+
+        $expires_at = $generate_token->accessToken->created_at
+            ->copy()
+            ->addMinutes(config('sanctum.expiration'));
 
         return response()->json([
             'token' => $token,
             'user' => $user,
+            'expires_at' => $expires_at,
         ], 200);
     }
 
