@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
 use App\Models\ReadingProgress;
@@ -189,6 +190,26 @@ class BookController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $books
+        ], 200);
+    }
+
+    public function getBookOfTheMonth()
+    {
+        $book = Book::join(
+                'reading_progress', 
+                'books.id', '=', 'reading_progress.book_id'
+            )
+            ->select(
+                'books.*', 
+                DB::raw('COUNT(DISTINCT reading_progress.user_id) as total_users')
+            )
+            ->groupBy('books.id')
+            ->orderByDesc('total_users')
+            ->first();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $book
         ], 200);
     }
 }
