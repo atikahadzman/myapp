@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('books', BookController::class);
     Route::apiResource('progress', ProgressController::class)->whereNumber('progress');
     Route::get('/progress/by-user', [ProgressController::class, 'getByUserId']);
+    Route::get('/progress/streak', [ProgressController::class, 'getReadingStreak']);
     Route::apiResource('rate', RatesController::class);
     Route::get('/rate/by-user/{id}', [RatesController::class, 'getSelfRateByBookId']);
     Route::get('/rate/by-book-id/{id}', [RatesController::class, 'getByBookId']);
