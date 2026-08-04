@@ -23,7 +23,7 @@ class UserController extends Controller
         $cacheKey = "users_page_{$page}";
 
         $users = cache()->remember($cacheKey, 60, function () use ($perPage, $page) {
-            return User::select('name', 'email', 'password', 'role_id', 'status')
+            return User::select('id', 'name', 'email', 'password', 'role_id', 'status')
                 ->orderBy('created_at', 'desc')
                 ->skip(($page - 1) * $perPage)
                 ->take($perPage)
